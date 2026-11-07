@@ -1,7 +1,7 @@
 GOSTREAM TALLY - HANDLEIDING (NEDERLANDS)
 
 Hoort bij gostream_tally.zip
-Versie 1.6.1 - 31 oktober 2026
+Versie 1.6.2 - 6 november 2026
 
 GOSTREAM TALLY — PREVIEW & ON AIR OP DE TELEFOON
 ================================================
