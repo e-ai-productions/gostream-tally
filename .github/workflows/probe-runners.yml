@@ -1,0 +1,17 @@
+name: probe runners
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  arm:
+    runs-on: macos-latest
+    steps:
+      - name: which machine
+        run: uname -m && sw_vers
+  intel:
+    runs-on: macos-15-intel
+    steps:
+      - name: which machine
+        run: uname -m && sw_vers
