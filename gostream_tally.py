@@ -47,7 +47,7 @@ SWITCHER_PORT = 19010
 # Parameters die we volgen. pgmIndex = on air, pvwIndex = preview.
 # Bronnummers uit het GoStream-protocol (GSP). De switcher stuurt alleen
 # nummers, geen namen, dus de weergavenamen staan hier en zijn aanpasbaar.
-VERSION = "1.6.1"
+VERSION = "1.6.2"
 
 # De GoStream Duet 8 meldt de vijfde tot en met de achtste ingang als
 # AUX 1 t/m AUX 4 (bronnummers 4001-4004). Voor de bediening zijn dat gewoon
