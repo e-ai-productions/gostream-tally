@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GoStream Tally</title>
+<style>
+  body { margin: 0; padding: 26px 20px 60px; background: #0b0b0f; color: #e6e6ee;
+    font-family: -apple-system, Segoe UI, Roboto, sans-serif; line-height: 1.6; }
+  .doos { max-width: 640px; margin: 0 auto; }
+  .kop { display: flex; align-items: center; gap: 12px; margin-bottom: 22px;
+    padding-bottom: 14px; border-bottom: 1px solid #24242f; }
+  h1 { font-size: 20px; margin: 0; flex: 1; }
+  h2 { font-size: 14px; margin: 22px 0 4px; color: #79c8ff; letter-spacing: .03em; }
+  p { margin: 0; color: #c2c2cf; font-size: 14px; }
+  .voet { margin-top: 34px; color: #55555f; font-size: 12px; }
+  button.taal { font-family: inherit; font-size: 15px; font-weight: 600; padding: 15px 14px;
+    border-radius: 11px; border: 1px solid #2e2e3c; background: #15151c; color: #e6e6ee;
+    cursor: pointer; text-align: left; }
+  button.taal:hover { background: #1f1f2b; border-color: #3d3d50; }
+  button.wissel { font-family: inherit; font-size: 12px; font-weight: 600; padding: 7px 11px;
+    border-radius: 8px; border: 1px solid #2e2e3c; background: #1c1c26; color: #dcdce6; cursor: pointer; }
+  button.wissel:hover { background: #262633; }
+  .raster { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; margin-top: 24px; }
+  .kiesdoos { max-width: 700px; margin: 6vh auto 0; }
+  .kiesdoos h1 { font-size: 22px; margin-bottom: 0; }
+</style>
+</head>
+<body>
+
+<div id="kies" class="kiesdoos">
+  <h1 id="kiesTitel"></h1>
+  <div id="knoppen" class="raster"></div>
+</div>
+
+<div id="lees" class="doos" hidden>
+  <div class="kop">
+    <h1 id="titel"></h1>
+    <button class="wissel" id="wissel"></button>
+  </div>
+  <div id="inhoud"></div>
+  <p class="voet">GoStream Tally</p>
+</div>
+
+<script>
+const DATA = {"pap": {"titel": "Kon bo e tally", "blokken": [["Kiko e ta", "E tally ta mustra riba bo telefòn kua fuente ta na PREVIEW i kua ta ON AIR."], ["Kuminsá", "Habri e programa. E ta habri e página di akseso den bo browser. E bentana mester keda habrí."], ["Direkshon di e switcher", "E bridge ta buska e switcher su mes. Si e no hañ'é, skirbi e direkshon (por ehèmpel 192.168.1.232) i primi Warda."], ["Bo telefòn", "Habri e direkshon ku ta aparecé den e bentana riba bo telefòn. Pidi akseso i laga e PC aprobá e aparato."], ["Si e no konektá", "Kontrulá ku e telefòn ta riba e mesun rede. Riba Windows, permití e programa den e firewall."], ["Sin Python", "E programa .exe no mester Python. Kòrká riba dje dos biaha. E bentana ku e direkshon mester keda habrí."]]}, "nl": {"titel": "Zo werkt de tally", "blokken": [["Wat het doet", "De tally toont op je telefoon welke bron in PREVIEW staat en welke ON AIR is."], ["Starten", "Open het programma. Het opent zelf de beheerpagina in je browser. Laat dat venster openstaan."], ["Adres van de switcher", "De bridge zoekt de switcher zelf. Vindt hij hem niet, typ dan het adres (bijvoorbeeld 192.168.1.232) en druk op Opslaan."], ["Je telefoon", "Open het adres uit het venster op je telefoon. Vraag toegang en keur het toestel goed op de pc."], ["Als het niet verbindt", "Controleer of de telefoon op hetzelfde netwerk zit. Sta op Windows het programma toe in de firewall."], ["Zonder Python", "Het .exe-programma heeft geen Python nodig. Dubbelklik erop. Het venster met het adres blijft open."]]}, "en": {"titel": "How the tally works", "blokken": [["What it does", "The tally shows on your phone which source is in PREVIEW and which is ON AIR."], ["Starting", "Open the program. It opens the control page in your browser. Keep that window open."], ["Switcher address", "The bridge looks for the switcher itself. If it cannot find it, type the address (for example 192.168.1.232) and press Save."], ["Your phone", "Open the address from the window on your phone. Request access and approve the device on the PC."], ["If it does not connect", "Check that the phone is on the same network. On Windows, allow the program in the firewall."], ["Without Python", "The .exe program needs no Python. Double-click it. The window with the address stays open."]]}, "es": {"titel": "Cómo funciona el tally", "blokken": [["Qué hace", "El tally muestra en tu teléfono qué fuente está en PREVIEW y cuál en ON AIR."], ["Iniciar", "Abre el programa. Abre la página de control en tu navegador. Deja esa ventana abierta."], ["Dirección del switcher", "El puente busca el switcher por sí mismo. Si no lo encuentra, escribe la dirección (por ejemplo 192.168.1.232) y pulsa Guardar."], ["Tu teléfono", "Abre en tu teléfono la dirección de la ventana. Pide acceso y aprueba el dispositivo en el PC."], ["Si no conecta", "Comprueba que el teléfono está en la misma red. En Windows, permite el programa en el cortafuegos."], ["Sin Python", "El programa .exe no necesita Python. Haz doble clic. La ventana con la dirección queda abierta."]]}, "fr": {"titel": "Comment fonctionne le tally", "blokken": [["Ce qu'il fait", "Le tally montre sur votre téléphone quelle source est en PREVIEW et laquelle est ON AIR."], ["Démarrer", "Ouvrez le programme. Il ouvre la page de contrôle dans votre navigateur. Laissez cette fenêtre ouverte."], ["Adresse du switcher", "Le pont cherche le switcher lui-même. S'il ne le trouve pas, saisissez l'adresse (par exemple 192.168.1.232) et appuyez sur Enregistrer."], ["Votre téléphone", "Ouvrez sur votre téléphone l'adresse affichée dans la fenêtre. Demandez l'accès et approuvez l'appareil sur le PC."], ["Si ça ne connecte pas", "Vérifiez que le téléphone est sur le même réseau. Sous Windows, autorisez le programme dans le pare-feu."], ["Sans Python", "Le programme .exe n'a pas besoin de Python. Double-cliquez dessus. La fenêtre avec l'adresse reste ouverte."]]}, "de": {"titel": "So funktioniert die Tally", "blokken": [["Was sie macht", "Die Tally zeigt auf Ihrem Telefon, welche Quelle in PREVIEW und welche ON AIR ist."], ["Starten", "Öffnen Sie das Programm. Es öffnet die Steuerseite im Browser. Lassen Sie dieses Fenster offen."], ["Adresse des Switchers", "Die Bridge sucht den Switcher selbst. Findet sie ihn nicht, tragen Sie die Adresse ein (zum Beispiel 192.168.1.232) und drücken Sie Speichern."], ["Ihr Telefon", "Öffnen Sie die Adresse aus dem Fenster auf Ihrem Telefon. Fragen Sie Zugang an und bestätigen Sie das Gerät am PC."], ["Wenn keine Verbindung entsteht", "Prüfen Sie, ob das Telefon im selben Netzwerk ist. Erlauben Sie das Programm in der Windows-Firewall."], ["Ohne Python", "Das .exe-Programm braucht kein Python. Doppelklicken Sie darauf. Das Fenster mit der Adresse bleibt offen."]]}, "pt": {"titel": "Como funciona o tally", "blokken": [["O que faz", "O tally mostra no seu telefone qual fonte está em PREVIEW e qual está ON AIR."], ["Iniciar", "Abra o programa. Ele abre a página de controlo no navegador. Deixe essa janela aberta."], ["Endereço do switcher", "A ponte procura o switcher sozinha. Se não o encontrar, escreva o endereço (por exemplo 192.168.1.232) e prima Guardar."], ["O seu telefone", "Abra no telefone o endereço da janela. Peça acesso e aprove o dispositivo no PC."], ["Se não ligar", "Verifique se o telefone está na mesma rede. No Windows, permita o programa na firewall."], ["Sem Python", "O programa .exe não precisa de Python. Faça duplo clique. A janela com o endereço fica aberta."]]}, "it": {"titel": "Come funziona il tally", "blokken": [["Cosa fa", "Il tally mostra sul telefono quale sorgente è in PREVIEW e quale è ON AIR."], ["Avviare", "Apri il programma. Apre la pagina di controllo nel browser. Lascia aperta quella finestra."], ["Indirizzo dello switcher", "Il bridge cerca lo switcher da solo. Se non lo trova, inserisci l'indirizzo (per esempio 192.168.1.232) e premi Salva."], ["Il tuo telefono", "Apri sul telefono l'indirizzo della finestra. Chiedi accesso e approva il dispositivo sul PC."], ["Se non si connette", "Controlla che il telefono sia sulla stessa rete. Su Windows, consenti il programma nel firewall."], ["Senza Python", "Il programma .exe non richiede Python. Fai doppio clic. La finestra con l'indirizzo resta aperta."]]}, "zh": {"titel": "计时器使用说明", "blokken": [["作用", "计时器在手机上显示哪个信号源在 PREVIEW，哪个在 ON AIR。"], ["启动", "打开程序。它会在浏览器中打开控制页面。请保持该窗口打开。"], ["切换台地址", "桥接会自动查找切换台。如果找不到，请输入地址（例如 192.168.1.232）并按保存。"], ["你的手机", "在手机上打开窗口中显示的地址。申请访问，并在电脑上批准该设备。"], ["无法连接时", "检查手机是否在同一网络。在 Windows 防火墙中允许该程序。"], ["无需 Python", "exe 程序不需要 Python。双击即可。显示地址的窗口会保持打开。"]]}, "ja": {"titel": "タリーの使い方", "blokken": [["できること", "タリーは、どのソースが PREVIEW でどれが ON AIR かをスマートフォンに表示します。"], ["起動", "プログラムを開きます。ブラウザーに操作ページが開きます。このウィンドウは開いたままにしてください。"], ["スイッチャーのアドレス", "ブリッジはスイッチャーを自動で探します。見つからない場合はアドレス（例 192.168.1.232）を入力して保存を押します。"], ["スマートフォン", "ウィンドウに表示されたアドレスをスマートフォンで開きます。アクセスを要求し、PC 側で承認します。"], ["接続しない場合", "スマートフォンが同じネットワークにあるか確認してください。Windows のファイアウォールでプログラムを許可します。"], ["Python 不要", "exe プログラムに Python は不要です。ダブルクリックしてください。アドレスのウィンドウは開いたままにします。"]]}, "ko": {"titel": "탈리 사용 방법", "blokken": [["기능", "탈리는 어떤 소스가 PREVIEW 이고 어떤 소스가 ON AIR 인지 휴대폰에 보여 줍니다."], ["시작", "프로그램을 엽니다. 브라우저에 제어 페이지가 열립니다. 그 창은 열어 두세요."], ["스위처 주소", "브리지가 스위처를 자동으로 찾습니다. 찾지 못하면 주소(예: 192.168.1.232)를 입력하고 저장을 누르세요."], ["휴대폰", "창에 표시된 주소를 휴대폰에서 엽니다. 접근을 요청하고 PC에서 기기를 승인하세요."], ["연결되지 않을 때", "휴대폰이 같은 네트워크에 있는지 확인하세요. Windows 방화벽에서 프로그램을 허용하세요."], ["Python 불필요", "exe 프로그램에는 Python이 필요 없습니다. 두 번 클릭하세요. 주소가 있는 창은 열어 두세요."]]}, "ru": {"titel": "Как работает талли", "blokken": [["Что делает", "Талли показывает на телефоне, какой источник в PREVIEW, а какой в ON AIR."], ["Запуск", "Откройте программу. Она откроет страницу управления в браузере. Это окно должно остаться открытым."], ["Адрес свитчера", "Мост ищет свитчер сам. Если не находит, введите адрес (например 192.168.1.232) и нажмите Сохранить."], ["Ваш телефон", "Откройте на телефоне адрес из окна. Запросите доступ и подтвердите устройство на ПК."], ["Если нет подключения", "Проверьте, что телефон в той же сети. В Windows разрешите программу в брандмауэре."], ["Без Python", "Программе .exe Python не нужен. Дважды щёлкните по ней. Окно с адресом остаётся открытым."]]}, "ar": {"titel": "كيف يعمل العدّاد", "blokken": [["ما يفعله", "يعرض العدّاد على هاتفك أي مصدر في PREVIEW وأي مصدر في ON AIR."], ["البدء", "افتح البرنامج. سيفتح صفحة التحكم في المتصفح. اترك تلك النافذة مفتوحة."], ["عنوان المبدّل", "يبحث الجسر عن المبدّل بنفسه. إن لم يجده، أدخل العنوان (مثل 192.168.1.232) واضغط حفظ."], ["هاتفك", "افتح على هاتفك العنوان الظاهر في النافذة. اطلب الوصول ووافق على الجهاز من الحاسوب."], ["إذا لم يتصل", "تأكد أن الهاتف على الشبكة نفسها. في Windows اسمح للبرنامج في جدار الحماية."], ["بدون Python", "برنامج exe لا يحتاج إلى Python. انقر عليه نقرًا مزدوجًا. تبقى نافذة العنوان مفتوحة."]]}, "hi": {"titel": "टैली कैसे काम करता है", "blokken": [["यह क्या करता है", "टैली आपके फ़ोन पर दिखाता है कि कौन सा स्रोत PREVIEW में है और कौन ON AIR में।"], ["शुरू करें", "प्रोग्राम खोलें। यह ब्राउज़र में नियंत्रण पेज खोलता है। उस विंडो को खुला रखें।"], ["स्विचर का पता", "ब्रिज स्विचर को स्वयं खोजता है। न मिले तो पता (जैसे 192.168.1.232) लिखें और सेव दबाएँ।"], ["आपका फ़ोन", "विंडो में दिखा पता अपने फ़ोन में खोलें। एक्सेस माँगें और पीसी पर डिवाइस स्वीकार करें।"], ["अगर कनेक्ट न हो", "जाँचें कि फ़ोन उसी नेटवर्क पर है। Windows फ़ायरवॉल में प्रोग्राम को अनुमति दें।"], ["Python के बिना", "exe प्रोग्राम के लिए Python की ज़रूरत नहीं। उस पर डबल-क्लिक करें। पता वाली विंडो खुली रहती है।"]]}, "id": {"titel": "Cara kerja tally", "blokken": [["Fungsinya", "Tally menampilkan di ponsel Anda sumber mana yang PREVIEW dan mana yang ON AIR."], ["Menjalankan", "Buka program. Ia membuka halaman kendali di browser. Biarkan jendela itu tetap terbuka."], ["Alamat switcher", "Bridge mencari switcher sendiri. Jika tidak menemukannya, ketik alamatnya (misalnya 192.168.1.232) lalu tekan Simpan."], ["Ponsel Anda", "Buka alamat dari jendela itu di ponsel. Minta akses dan setujui perangkat di PC."], ["Jika tidak terhubung", "Periksa apakah ponsel berada di jaringan yang sama. Di Windows, izinkan program di firewall."], ["Tanpa Python", "Program .exe tidak memerlukan Python. Klik dua kali. Jendela berisi alamat tetap terbuka."]]}};
+const TALEN = [{"kode": "pap", "naam": "Papiamentu"}, {"kode": "nl", "naam": "Nederlands"}, {"kode": "en", "naam": "English"}, {"kode": "es", "naam": "Español"}, {"kode": "fr", "naam": "Français"}, {"kode": "de", "naam": "Deutsch"}, {"kode": "pt", "naam": "Português"}, {"kode": "it", "naam": "Italiano"}, {"kode": "zh", "naam": "中文"}, {"kode": "ja", "naam": "日本語"}, {"kode": "ko", "naam": "한국어"}, {"kode": "ru", "naam": "Русский"}, {"kode": "ar", "naam": "العربية"}, {"kode": "hi", "naam": "हिन्दी"}, {"kode": "id", "naam": "Bahasa Indonesia"}];
+const KIES = {"pap": "Skohe bo idioma", "nl": "Kies je taal", "en": "Choose your language", "es": "Elige tu idioma", "fr": "Choisissez votre langue", "de": "Wählen Sie Ihre Sprache", "pt": "Escolha o seu idioma", "it": "Scegli la tua lingua", "zh": "选择你的语言", "ja": "言語を選んでください", "ko": "언어를 선택하세요", "ru": "Выберите язык", "ar": "اختر لغتك", "hi": "अपनी भाषा चुनें", "id": "Pilih bahasa Anda"};
+
+const kiesVak = document.getElementById('kies');
+const leesVak = document.getElementById('lees');
+let taal = localStorage.getItem('instrTaal');
+
+function systeemTaal() {
+  const s = (navigator.language || 'en').slice(0, 2).toLowerCase();
+  return DATA[s] ? s : 'en';
+}
+
+function toonKiezer() {
+  const voorstel = taal && DATA[taal] ? taal : systeemTaal();
+  document.getElementById('kiesTitel').textContent = KIES[voorstel] || KIES.en;
+  document.documentElement.lang = voorstel;
+  document.documentElement.dir = (voorstel === 'ar') ? 'rtl' : 'ltr';
+  const vak = document.getElementById('knoppen');
+  vak.textContent = '';
+  TALEN.forEach(t => {
+    const b = document.createElement('button');
+    b.className = 'taal';
+    b.textContent = t.naam;
+    b.onclick = () => { taal = t.kode; localStorage.setItem('instrTaal', taal); toonLezer(); };
+    // de naam in de eigen taal, zodat iedereen zijn eigen regel herkent
+    b.setAttribute('lang', t.kode);
+    vak.append(b);
+  });
+  kiesVak.hidden = false;
+  leesVak.hidden = true;
+}
+
+function toonLezer() {
+  const d = DATA[taal] || DATA.en;
+  document.getElementById('titel').textContent = d.titel;
+  const eigen = TALEN.find(t => t.kode === taal);
+  document.getElementById('wissel').textContent = (eigen ? eigen.naam : 'English') + ' ▾';
+  document.documentElement.lang = taal;
+  document.documentElement.dir = (taal === 'ar') ? 'rtl' : 'ltr';
+  const vak = document.getElementById('inhoud');
+  vak.textContent = '';
+  d.blokken.forEach(([kop, tekst]) => {
+    const h = document.createElement('h2');
+    h.textContent = kop;
+    const p = document.createElement('p');
+    p.textContent = tekst;
+    vak.append(h, p);
+  });
+  kiesVak.hidden = true;
+  leesVak.hidden = false;
+}
+
+document.getElementById('wissel').onclick = toonKiezer;
+
+// een keuze van een vorige keer telt; anders eerst kiezen
+if (taal && DATA[taal]) { toonLezer(); } else { toonKiezer(); }
+</script>
+</body>
+</html>

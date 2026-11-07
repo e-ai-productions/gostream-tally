@@ -1,0 +1,414 @@
+GOSTREAM TALLY - HANDLEIDING (NEDERLANDS)
+
+Hoort bij gostream_tally.zip
+Versie 1.6.1 - 31 oktober 2026
+
+GOSTREAM TALLY — PREVIEW & ON AIR OP DE TELEFOON
+================================================
+
+
+Wat je op de telefoon ziet: acht tegels, één per input.
+
+  ```
++--------------------------------------+
+  | ● verbonden           192.168.1.80   |
++------------------+-------------------+
+  |   Cam 1          |   Cam 2           |
+  |                  |   ON AIR          |
+  |                  |   (rood)          |
++------------------+-------------------+
+  |   Cam 3          |   Cam 4           |
+  |   PREVIEW        |                   |
+  |   (groen)        |   (donker)        |
++------------------+-------------------+
+  |   Cam 5          |   Cam 6           |
++------------------+-------------------+
+  |   Cam 7          |   Cam 8           |
++------------------+-------------------+
+  | PGM rood, PVW groen   [Flits aan]     |
++--------------------------------------+
+  ```
+
+Rood = on air, groen = preview, donker = vrij. De telefoon kan trillen zodra een
+camera on air gaat, zodat de operator niet de hele tijd naar het scherm hoeft te
+kijken.
+
+
+Wat je nodig hebt
+-----------------
+
+
+1. De GoStream Duet 8 ISO op 192.168.1.80 in het netwerk.
+2. Een Windows-pc in hetzelfde netwerk als de switcher, met Python 3.
+   Dit is nodig omdat een telefoon zelf geen directe verbinding met de switcher
+   kan openen. De pc doet dat, de telefoon leest mee via de browser.
+3. De telefoon in datzelfde netwerk (zelfde wifi).
+
+
+Starten op Windows 11
+---------------------
+
+
+Eenmalig: Python installeren. Ga naar https://www.python.org/downloads/ en
+installeer Python 3. Vink tijdens de installatie "Add python.exe to PATH" aan.
+
+Daarna, elke keer:
+
+1. Pak de zip uit, bijvoorbeeld naar C:\Users\<jij>\Documents\gostream_tally.
+2. Open de uitgepakte map gostream_tally.
+3. Rechtermuisknop op start_windows.ps1 → Uitvoeren met PowerShell.
+
+Werkt dat niet (uitvoeringsbeleid), open dan PowerShell in die map
+(rechtermuisknop in de map → Open in Terminal) en typ:
+
+  ```
+powershell -ExecutionPolicy Bypass -File .\start_windows.ps1
+  ```
+
+Of gewoon direct, zonder script:
+
+  ```
+python gostream_tally.py
+  ```
+
+Het venster laat je eigen adres zien, bijvoorbeeld http://192.168.1.55:8080. De
+beheerpagina opent vanzelf in je browser; dat venster laat je openstaan. Wil je
+dat niet, start dan met --no-open.
+
+
+Het adres van de switcher
+-------------------------
+
+
+De bridge zoekt de switcher zelf in het netwerk. Vindt hij hem, dan gaat het
+vanzelf. Vindt hij hem niet, open dan de beheerpagina en vul onderaan het adres
+in, bijvoorbeeld 192.168.1.232, en druk op Opslaan en verbinden.
+
+Dat adres wordt onthouden in switcher.json, dus je hoeft het maar één keer te
+doen. De bridge verbindt meteen opnieuw, zonder herstart.
+
+
+Openen op de telefoon
+---------------------
+
+
+Typ dat adres in de browser van de telefoon. Zet de pagina daarna op het
+beginscherm (Delen → Zet op beginscherm), dan opent hij schermvullend als een app.
+
+
+Windows-firewall
+----------------
+
+
+De eerste keer kan Windows vragen of Python verbindingen mag accepteren.
+Kies Toestaan voor particuliere netwerken.
+
+Gebeurde dat niet en blijft de pagina op de telefoon leeg, voer dan één keer uit
+als administrator:
+
+  ```
+New-NetFirewallRule -DisplayName "GoStream Tally" -Direction Inbound -Protocol TCP -LocalPort 8080 -Action Allow
+  ```
+
+
+Samen met de GoStream-pc-software
+---------------------------------
+
+
+De besturing van de Duet 8 ISO loopt over Ethernet, niet over USB. De USB-poort
+is voor video (webcam/UVC) of voor de meegeleverde USB-C naar Ethernet-adapter.
+Een pc die dus niet fysiek aan de switcher hangt, kan hem gewoon bedienen zolang
+hij in hetzelfde netwerk zit en het adres 192.168.1.80 invult. Dat geldt voor de
+GoStream-software en net zo goed voor deze tally-pagina.
+
+Eén ding kon ik niet hard bevestigen: of de switcher **meerdere verbindingen
+tegelijk accepteert. Daarom heeft de pagina een knop Geef vrij**. Die sluit de
+verbinding netjes, zodat de GoStream-software alle ruimte heeft. Met Verbinden
+open je hem weer. De knop wordt oranje met "switcher vrij" als de verbinding
+losgelaten is.
+
+Zo test je het in een minuut:
+
+1. Start de bridge en open de pagina op de telefoon.
+2. Open tegelijk de GoStream-software op de pc en kijk of die normaal verbindt en
+   de status toont.
+3. Werkt de software gewoon, dan kunnen ze samen. Krijgt de software geen
+   verbinding, druk dan op Geef vrij en probeer opnieuw.
+
+
+Als poort 8080 bezet is
+-----------------------
+
+
+Op een pc waar al andere software draait kan poort 8080 bezet of gereserveerd zijn.
+Dan meldt het script dat en pakt het automatisch de eerstvolgende vrije poort. Het
+venster laat meteen het juiste adres zien, bijvoorbeeld:
+
+  ```
+  Open op de telefoon: http://192.168.1.55:8093
+  ```
+
+Je hoeft dan niets aan te passen, gebruik gewoon het adres dat er staat. Wil je zelf
+een poort kiezen:
+
+  ```
+python gostream_tally.py --web-port 9000
+  ```
+
+
+Wie mag er in
+-------------
+
+
+De bridge is dicht voor onbekende toestellen. Een telefoon die de pagina opent
+ziet alleen "Toegang nodig" en vraagt om toestemming. Op de pc open je:
+
+  http://127.0.0.1:8080/host
+
+Daar staat elk toestel dat toegang vraagt, met naam, adres en tijdstip. Met
+*Connect* laat je het toe, met *Weigeren* wijs je het af en met *Verbinding
+verbreken* sluit je het weer buiten.
+
+Na het toelaten krijgt het toestel een code van zes tekens. Dezelfde code staat
+op de pc. Kloppen ze niet, dan is het een ander toestel dan je dacht: verbreek
+de verbinding.
+
+Die lijst is alleen op de pc zelf te openen. Vanaf een ander adres in het netwerk
+geeft de bridge geen antwoord, dus niemand kan zichzelf toelaten. Ook de status,
+de namen en de knoppen werken alleen met de sleutel die het toegelaten toestel
+heeft gekregen. Zonder sleutel krijgt elk verzoek "geen toegang".
+
+Instellingen staan in access.json naast het script. Verwijder dat bestand om alle
+toestellen weer te laten vragen.
+
+
+Het adres voor de telefoon
+--------------------------
+
+
+De beheerpagina toont bovenaan het adres dat een telefoon moet openen, met een
+knop Kopiëren. Je hoeft het niet meer uit het zwarte venster over te typen.
+
+
+Een ingang aan een toestel geven
+--------------------------------
+
+
+Elk toestel kan aan één ingang gekoppeld worden, zodat een operator alleen naar
+de rand van het scherm hoeft te kijken in plaats van naar alle tegels.
+
+1. Open http://127.0.0.1:<poort>/host op de pc.
+2. Kies bij het toestel een ingang uit de lijst.
+
+Die telefoon toont nu een rode rand terwijl zijn ingang on air is, een groene
+rand bij preview, en geen rand als hij niet geselecteerd is. De keuze wordt
+onthouden, ook na een verbroken verbinding en een nieuwe goedkeuring. Kies het
+streepje om de koppeling te wissen.
+
+Je kunt de ingang op elk moment wijzigen, ook midden in een uitzending. De
+telefoon volgt binnen een seconde, zonder de pagina te verversen.
+
+
+Taal veranderen
+---------------
+
+
+Rechtsboven staat een knopje met de taalcodes, bijvoorbeeld NL. Tik erop en kies
+de taal. De keuze wordt op dat toestel bewaard en werkt meteen door, ook in het
+namenpaneel.
+
+Beschikbaar: Papiamentu, Nederlands, English, Espanol, Francais, Deutsch,
+Portugues, Italiano, 中文, 日本語, 한국어, Русский, العربية, हिन्दी en
+Bahasa Indonesia. Arabisch schakelt de hele pagina naar rechts-naar-links.
+
+De Papiamentu-teksten volgen de Buki di Oro (FPI 2009). *ON AIR* en *PREVIEW*
+blijven in alle talen staan: dat is vaktaal in de regiekamer en iedereen leest
+het zo.
+
+
+Instructies en talen
+--------------------
+
+
+INSTRUCTIONS.html is een los bestand dat je zonder de bridge kunt openen. Het
+legt in het kort uit hoe alles werkt.
+
+Voor je iets leest vraagt het welke taal je wilt, met alle vijftien talen bij
+hun eigen naam. Engels staat bovenaan, zodat iedereen kan beginnen en de rest zijn
+eigen taal kiest. Die keuze wordt onthouden, en met de knop bovenaan ga je terug
+naar de lijst.
+
+Dezelfde uitleg staat ook op http://<pc>:<poort>/instructions, handig vanaf de
+telefoon.
+
+De beheerpagina en de telefoonpagina hebben allebei een taalknop met vijftien
+talen: Papiamentu, Nederlands, Engels, Spaans, Frans, Duits, Portugees, Italiaans,
+Chinees, Japans, Koreaans, Russisch, Arabisch, Hindi en Indonesisch. Zonder keuze
+volgt de pagina de taal van je systeem.
+
+
+Signaal bij een wissel
+----------------------
+
+
+Er gaat *geen geluid* af, want de app staat naast de opname of uitzending.
+Bij een wissel van programmabron flitst het scherm kort wit. Op Android trilt
+het toestel erbij; een iPhone kan vanuit een webpagina niet trillen.
+
+De knop in de onderbalk regelt dit signaal en staat standaard aan.
+
+
+Namen van de bronnen
+--------------------
+
+
+De switcher stuurt via het protocol alleen bronnummers, geen namen. De namen staan
+daarom in de app zelf en zijn aan te passen:
+
+1. Open de pagina op de telefoon of pc.
+2. Tik op Namen.
+3. Vul per bronnummer een naam in en tik op Opslaan.
+
+De namen worden bewaard in labels.json naast het programma, dus ze gelden voor
+elk toestel dat de pagina opent. Zonder eigen namen gebruikt de app nette
+standaardnamen, bijvoorbeeld MultiSource voor bron 5001 en Multiview voor 9001.
+
+Let op: het wijzigen van een naam verandert niets aan de switcher zelf.
+
+
+Cameranamen aanpassen
+---------------------
+
+
+Standaard heet input 1 t/m 8 "Cam 1" t/m "Cam 8". Eigen namen meegeven:
+
+  ```
+python gostream_tally.py --labels "Hoofdcamera,PTZ links,PTZ rechts,Documentcamera,Telefoon 1,Telefoon 2,Reserve,Reserve"
+  ```
+
+De volgorde is de volgorde van de inputs op de switcher.
+
+
+Als het niet verbindt
+---------------------
+
+
+Loop dit na, in deze volgorde:
+
+1. Zit de pc in hetzelfde netwerk als de switcher? Test in PowerShell:
+   ping 192.168.1.80
+2. Stel in dat de netwerkbediening van de switcher aan staat. De Companion-module
+   van OSEE werkt ook alleen over netwerk, niet over USB.
+3. Firmware: het protocol werkt vanaf Duet 8 ISO firmware 2.1.0.
+4. Zit de telefoon op hetzelfde wifi en niet op een gastnetwerk? Gastnetwerken
+   houden toestellen vaak van elkaar gescheiden.
+5. Ander IP gekregen van de router? Start dan met
+   python gostream_tally.py --host <ander-ip>.
+
+De pagina bovenaan toont "geen verbinding" zolang de bridge de switcher niet
+bereikt. De bridge blijft het elke 2 seconden opnieuw proberen, dus je hoeft
+niets te herstarten als de switcher later aangaat.
+
+
+Zonder Python: één programma bouwen
+-----------------------------------
+
+
+Wil je het op een pc draaien waar geen Python op staat, of wil je het als één
+bestand doorgeven, bouw dan eenmalig een .exe. Dat doe je op een pc die wél
+Python heeft.
+
+1. Open de uitgepakte map gostream_tally.
+2. Rechtermuisknop op build_windows.ps1 en kies Uitvoeren met PowerShell.
+   Lukt dat niet, open dan PowerShell in de map en typ:
+
+  powershell -ExecutionPolicy Bypass -File .\build_windows.ps1
+
+3. Het script haalt PyInstaller op en bouwt. Na ongeveer een minuut staat er
+   dist\gostream-tally.exe.
+4. Kopieer dat bestand naar een eigen map en start het met een dubbelklik.
+
+Het venster met het adres blijft nodig: dat is de bridge. Sluit je het, dan stopt
+ook de pagina op de telefoon. labels.json en access.json komen naast de
+.exe te staan.
+
+De firewall vraagt opnieuw om toestemming, want dit is een ander programma dan
+python.exe. Sommige scanners melden een onbekend bestand; dat komt door de
+manier waarop zo'n enkel bestand in elkaar zit, niet door een fout in het
+programma. Vertrouw je de melding niet, draai dan gewoon met Python.
+
+
+Testen zonder switcher
+----------------------
+
+
+  ```
+python gostream_tally.py --demo
+  ```
+
+Dan simuleert het script een switcher die elke 3 seconden van camera wisselt.
+Handig om de pagina op de telefoon te bekijken voordat je naar de locatie gaat.
+
+
+Hoe het werkt (voor als er later iets stuk is)
+----------------------------------------------
+
+
+De switcher gebruikt het GoStream Protocol over TCP-poort 19010:
+
+  ```
+pakket = 0xEB 0xA6 | protoid 0x00 | U16LE(len+2) | JSON | U16LE(CRC16-modbus)
+  ```
+
+Elk bericht is JSON, bijvoorbeeld {"id":"pgmIndex","type":"get"}. De switcher
+antwoordt met de waarde en stuurt spontaan type: "pus" zodra er iets verandert.
+Deze app luistert daarop, dus de status is altijd actueel zonder te pollen.
+
+De gevolgde parameters:
+
+  ```
+pgmIndex        welke input on air is
+pvwIndex        welke input in preview staat
+keyOnAir        upstream key aan/uit
+dskOnAir        downstream key aan/uit
+ftb             fade to black
+autoTransition  loopt er een transistie
+  ```
+
+Het protocol komt uit de open-source Companion-module van OSEE
+(bitfocus/companion-module-osee-gostream-series). Dezelfde route die Companion
+en de GoStream-pc-software gebruiken, dus geen giswerk.
+
+
+Bestanden
+---------
+
+
+  ```
+gostream_tally.py        de bridge en de webpagina, één bestand, geen extra pakketten
+start_windows.ps1        starten op Windows 11 (laat je eigen adres zien)
+start_mac.command        starten op een Mac indien nodig
+build_windows.ps1        één .exe bouwen die zonder Python werkt
+INSTRUCTIONS.html        de instructies, in vijftien talen
+MANUAL.txt               deze handleiding als platte tekst voor Notepad
+MANUAL.nl.txt            dezelfde handleiding in het Nederlands
+README.md                dit bestand
+README.nl.md             hetzelfde in het Nederlands
+PUBLISHING.md            zo publiceer je het zodat anderen het kunnen downloaden
+test_fake_switcher.py    nep-switcher om de bridge te testen zonder hardware
+  ```
+
+Alle bestanden hebben een Engelse naam, zodat het pakket op elke machine hetzelfde leest.
+
+Alleen de standaardbibliotheek van Python is nodig, dus niets met pip
+installeren.
+
+
+Wat al getest is en wat niet
+----------------------------
+
+
+Getest: de pakketopbouw en CRC tegen het protocol, het ophalen van de
+beginstatus, en het live doorkomen van een wijziging (camera 3 → 4 met preview
+die meeschuift) via een nagebootste switcher. Niet getest: de verbinding met de
+echte Duet 8 ISO. Dat is de eerste stap op locatie.
