@@ -1,13 +1,16 @@
-name: build windows program
+name: build programs
+
 on:
   push:
     tags: ["v*"]
   workflow_dispatch:
+
 permissions:
   contents: write
 
 jobs:
-  build:
+  windows:
+    name: Windows (exe)
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
@@ -21,10 +24,70 @@ jobs:
       - name: Store as a download
         uses: actions/upload-artifact@v4
         with:
-          name: gostream-tally-windows
+          name: windows-exe
           path: dist/gostream-tally.exe
-      - name: Also publish as a release when tagged
+      - name: Publish on the release
         if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v2
         with:
           files: dist/gostream-tally.exe
+
+  mac-applesilicon:
+    name: Mac Apple Silicon
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install PyInstaller
+        run: pip install pyinstaller
+      - name: Build the program
+        run: pyinstaller --onefile --name gostream-tally gostream_tally.py
+      - name: Confirm the architecture
+        run: file dist/gostream-tally && lipo -archs dist/gostream-tally
+      - name: Pack it so the run permission survives
+        run: |
+          chmod +x dist/gostream-tally
+          cd dist
+          zip -r ../gostream-tally-mac-applesilicon.zip gostream-tally
+      - name: Store as a download
+        uses: actions/upload-artifact@v4
+        with:
+          name: mac-applesilicon
+          path: gostream-tally-mac-applesilicon.zip
+      - name: Publish on the release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: gostream-tally-mac-applesilicon.zip
+
+  mac-intel:
+    name: Mac Intel
+    runs-on: macos-15-intel
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install PyInstaller
+        run: pip install pyinstaller
+      - name: Build the program
+        run: pyinstaller --onefile --name gostream-tally gostream_tally.py
+      - name: Confirm the architecture
+        run: file dist/gostream-tally && lipo -archs dist/gostream-tally
+      - name: Pack it so the run permission survives
+        run: |
+          chmod +x dist/gostream-tally
+          cd dist
+          zip -r ../gostream-tally-mac-intel.zip gostream-tally
+      - name: Store as a download
+        uses: actions/upload-artifact@v4
+        with:
+          name: mac-intel
+          path: gostream-tally-mac-intel.zip
+      - name: Publish on the release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: gostream-tally-mac-intel.zip
