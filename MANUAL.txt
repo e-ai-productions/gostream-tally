@@ -1,7 +1,7 @@
 GOSTREAM TALLY - MANUAL
 
 Ships with gostream_tally.zip
-Version 1.6.1 - 31 October 2026
+Version 1.6.2 - 6 November 2026
 
 GOSTREAM TALLY — PREVIEW AND ON AIR ON YOUR PHONE
 =================================================
